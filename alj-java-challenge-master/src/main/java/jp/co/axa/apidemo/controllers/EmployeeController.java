@@ -77,9 +77,9 @@ public class EmployeeController {
             @ApiResponse(code = 500, message="Internal Server Error", response = Void.class),
     })
     public ResponseEntity saveEmployee(@Valid @RequestBody Employee employee, HttpServletResponse response){
-        logging("Saving Employee ID: "+employee.getId());
+        logging("Saving Employee Name: "+employee.getName());
         employeeService.saveEmployee(employee);
-        logging("Saved Employee ID: "+employee.getId());
+        logging("Saved Employee Name : "+employee.getName());
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -113,7 +113,7 @@ public class EmployeeController {
                                @PathVariable(name="employeeId")Long employeeId){
         Employee emp = employeeService.getEmployee(employeeId);
         if(emp != null){
-            Employee saved = employeeService.updateEmployee(employee);
+            Employee saved = employeeService.updateEmployee(employeeId, employee);
             return new ResponseEntity<>(
                     new EmployeeDto(
                             saved.getId(),
