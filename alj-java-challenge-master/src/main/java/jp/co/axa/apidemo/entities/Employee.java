@@ -1,6 +1,7 @@
 package jp.co.axa.apidemo.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="EMPLOYEE")
+@AllArgsConstructor
 public class Employee {
 
     @Getter
@@ -40,4 +42,8 @@ public class Employee {
     @NotNull(message = "department is mandatory")
     @Column(name="DEPARTMENT")
     private String department;
+
+    public Employee() {
+
+    }
 }

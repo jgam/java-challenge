@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -40,6 +41,9 @@ public class EmployeeServiceImpl implements EmployeeService{
         Optional<Employee> employee;
         try{
             employee = employeeRepository.findById(employeeId);
+            if(employee == null){
+                throw new EmployeeNotExistException("Employee not exist with the given employee ID: " + employeeId);
+            }
         }catch(EntityNotFoundException entityNotFoundException){
             throw entityNotFoundException;
         }catch(Exception e){
@@ -50,25 +54,27 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Cacheable(value = "employee", key="#employeeId")
-    public void saveEmployee(Employee employee){
+    @Transactional
+    public Employee saveEmployee(Employee employee){
         try{
             if(employee != null){
-                employeeRepository.save(employee);
+                employee = employeeRepository.save(employee);
             }
         }catch(Exception e){
             e.printStackTrace();
             throw e;
         }
-
+        return employee;
     }
 
     @CacheEvict(value = "employee", key="#employeeId")
-    public void deleteEmployee(Long employeeId){
+    public Boolean deleteEmployee(Long employeeId){
         if(employeeExists(employeeId)){
             employeeRepository.deleteById(employeeId);
         }else{
             throw new EmployeeNotExistException("Cant delete since employee does not exist");
         }
+        return true;
     }
 
     @CachePut(value = "employee", key="#employeeId")
