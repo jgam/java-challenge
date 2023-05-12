@@ -32,7 +32,7 @@ public class Employee implements Serializable{
 
     @Getter
     @NotNull(message = "name field is mandatory")
-    @Size(min = 5, message="name should contain at least 5 characters")
+    @Size(min = 2, message="name should contain at least 2 characters")
     @Column(name="EMPLOYEE_NAME")
     private String name;
 
