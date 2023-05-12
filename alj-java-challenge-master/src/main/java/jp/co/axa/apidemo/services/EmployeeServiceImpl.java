@@ -19,10 +19,13 @@ import java.util.Optional;
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
 
     private Logger logger = LoggerFactory.getLogger(EmployeeServiceImpl.class);
+
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
 
     @Cacheable(value = "employees")
     public List<Employee> retrieveEmployees() {
@@ -36,7 +39,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         return employees;
     }
 
-    @Cacheable(value = "employee", key="#employeeId")
+    @Cacheable(cacheNames = "employees", key = "#employeeId")
     public Employee getEmployee(Long employeeId) {
         Optional<Employee> employee;
         try{
@@ -53,8 +56,8 @@ public class EmployeeServiceImpl implements EmployeeService{
         return employee.get();
     }
 
-    @Cacheable(value = "employee", key="#employeeId")
     @Transactional
+    @CacheEvict(value = "employees", allEntries = true)
     public Employee saveEmployee(Employee employee){
         try{
             if(employee != null){
@@ -67,7 +70,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         return employee;
     }
 
-    @CacheEvict(value = "employee", key="#employeeId")
+    @CacheEvict(value = "employees", allEntries = true)
     public Boolean deleteEmployee(Long employeeId){
         if(employeeExists(employeeId)){
             employeeRepository.deleteById(employeeId);
@@ -78,6 +81,7 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @CachePut(value = "employee", key="#employeeId")
+    @CacheEvict(value = "employees", allEntries = true)
     public Employee updateEmployee(Long employeeId, Employee employee) {
         if(employeeExists(employeeId)){
             employee.setId(employeeId);

@@ -14,11 +14,14 @@ import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Entity
 @Table(name="EMPLOYEE")
 @AllArgsConstructor
-public class Employee {
+public class Employee implements Serializable{
+
+    private static final long serialVersionUID = 1L;
 
     @Getter
     @Setter

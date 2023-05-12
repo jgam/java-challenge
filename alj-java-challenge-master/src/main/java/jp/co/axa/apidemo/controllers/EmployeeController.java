@@ -4,6 +4,7 @@ import io.swagger.annotations.*;
 import jp.co.axa.apidemo.entities.Employee;
 import jp.co.axa.apidemo.entities.dto.EmployeeDto;
 import jp.co.axa.apidemo.services.EmployeeService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +21,18 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1")
 public class EmployeeController {
 
-    @Autowired
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
+
 
     Logger logger = LoggerFactory.getLogger(EmployeeController.class);
 
-    public void setEmployeeService(EmployeeService employeeService) {
+    public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
+
+//    public void setEmployeeService(EmployeeService employeeService) {
+//        this.employeeService = employeeService;
+//    }
 
     @GetMapping("/employees")
     @ApiOperation(value = "The API gets all the employees in the system", response= EmployeeDto.class)
